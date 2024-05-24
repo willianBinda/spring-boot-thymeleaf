@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cadastro de Usuário</title>
+    <th:block th:replace="~{fragments/navbar :: navbar}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</head>
+<body>
+<div class="container">
+    <h2>Cadastro de Usuário</h2>
+    <form th:action="@{/users/new}" method="post">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="text" class="form-control" id="email" name="email">
+        </div>
+        <div class="form-group">
+            <label for="senha">Password:</label>
+            <input type="password" class="form-control" id="senha" name="senha">
+        </div>
+        <div class="form-group">
+            <label for="nivel">Nível:</label>
+            <select class="form-control" id="nivel" name="nivel">
+                <option value="1">Nível 1</option>
+                <option value="2">Nível 2</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Cadastrar</button>
+        </div>
+    </form>
+<!--    <div th:if="${validationErrors}" class="alert alert-danger" th:text="${validationErrors}"></div>-->
+    <div th:if="${validationErrors}" class="alert alert-danger">
+        <ul>
+            <li th:each="error : ${validationErrors}" th:text="${error.defaultMessage}"></li>
+        </ul>
+    </div>
+    <div th:if="${userSaved}">
+        <div th:object="${userSaved}">
+            <p>email: <span th:text="*{email}">Sebastian</span>.</p>
+            <p>senha: <span th:text="*{senha}">Pepper</span>.</p>
+            <p>nivel: <span th:text="*{nivel}">Saturn</span>.</p>
+            <p>id: <span th:text="*{id}">Saturn</span>.</p>
+            <p>updated_at: <span th:text="*{updatedAt}">Saturn</span>.</p>
+            <p>created_at: <span th:text="*{createdAt}">Saturn</span>.</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,63 @@
+# Configuração padrão
+spring:
+  jpa:
+    open-in-view: false
+  application:
+    name: demo
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+
+---
+# Configuração para o perfil 'dev'
+spring:
+  config:
+    activate:
+      on-profile: dev  # Ativa esta configuração para o perfil 'dev'
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update  # Atualiza automaticamente para desenvolvimento
+    show-sql: true
+
+---
+# Configuração para o perfil 'test'
+spring:
+  config:
+    activate:
+      on-profile: test  # Define que esta configuração é para o perfil 'test'
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test_db  # Banco de dados em memória
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop  # Cria e remove o banco de dados ao iniciar/parar
+
+
+---
+# Configuração para o perfil 'prod'
+spring:
+  config:
+    activate:
+      on-profile: prod  # Define que esta configuração é para o perfil 'prod'
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}  # Use variáveis de ambiente
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: none  # Evitar mudanças automáticas no banco de dados
+
+
+---
+server:
+  error:
+    include-stacktrace: never

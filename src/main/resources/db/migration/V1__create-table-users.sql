@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS users (
+    id TEXT PRIMARY KEY UNIQUE NOT NULL,
+    email VARCHAR NOT NULL UNIQUE,
+    senha VARCHAR(255) NOT NULL,
+    nivel VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
+);
