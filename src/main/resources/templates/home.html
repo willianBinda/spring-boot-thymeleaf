@@ -3,7 +3,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Home</title>
-    <th:block th:replace="~{fragments/navbar :: navbar}"></th:block>
+    <th:block th:replace="~{fragments/navbar :: navbar(logged=${logged})}"></th:block>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
     <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 </head>

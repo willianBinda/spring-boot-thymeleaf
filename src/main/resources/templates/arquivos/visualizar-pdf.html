@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Visualizar PDF</title>
+    <th:block th:replace="~{fragments/navbar :: navbar(logged=${logged})}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <h1>Visualizar PDF</h1>
+    <div id="pdf-viewer">
+        <canvas id="pdf-canvas"></canvas>
+    </div>
+    <div class="pdf-viewer">
+<!--        <iframe th:src="@{/visualizarPDF?id=740be2f3-d102-400f-942c-ff52b07f3548}" width="100%" height="600px"></iframe>-->
+    </div>
+</div>
+</body>
+<script>
+    // URL do endpoint que serve o PDF
+    var params = new URLSearchParams(window.location.search);
+    var id = params.get('id');
+    var url = '/visualizarPDF?id='+id;
+
+    // Carregar o PDF usando PDF.js
+    var loadingTask = pdfjsLib.getDocument(url);
+    loadingTask.promise.then(function(pdf) {
+        // Você pode fazer algo com o PDF aqui, como mostrar a quantidade de páginas
+        pdf.getPage(1).then(function(page) {
+            var scale = 1.5;
+            var viewport = page.getViewport({ scale: scale });
+
+            // Preparar o canvas usando as dimensões da página
+            var canvas = document.getElementById('pdf-canvas');
+            var context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            // Renderizar a página no canvas
+            var renderContext = {
+                canvasContext: context,
+                viewport: viewport
+            };
+            page.render(renderContext);
+        });
+    }, function(reason) {
+        console.error(reason);
+    });
+</script>
+</html>

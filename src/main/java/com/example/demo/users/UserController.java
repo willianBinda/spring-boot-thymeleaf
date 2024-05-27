@@ -18,6 +18,8 @@ public class UserController {
     @GetMapping("/users/new")
     public String usuarios(Model model){
 //        model.addAttribute("user",new UserDTO());
+        model.addAttribute("logged", true);
+
         return "users/new";
     }
 
@@ -26,11 +28,15 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             // Se houver erros, adicione-os ao modelo
             model.addAttribute("validationErrors", bindingResult.getAllErrors());
+            //model.addAttribute("logged", true);
+
             // Retorne para a página do formulário para que o usuário possa corrigir os problemas
             return "users/new";
         }
         UserDTO userDTO = userService.criaUser(dto);
         model.addAttribute("userSaved",userDTO);
+        //model.addAttribute("logged", true);
+
         return "users/new";
     }
 }

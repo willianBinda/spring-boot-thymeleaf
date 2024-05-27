@@ -1,4 +1,13 @@
-# Configuração padrão
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size:
+        10MB
+      max-request-size:
+        10MB
+---
+# configuraÃ§Ã£o
 spring:
   jpa:
     open-in-view: false
@@ -10,30 +19,30 @@ spring:
     password: postgres
 
 ---
-# Configuração para o perfil 'dev'
+# ConfiguraÃ§Ã£o para o perfil 'dev'
 spring:
   config:
     activate:
-      on-profile: dev  # Ativa esta configuração para o perfil 'dev'
+      on-profile: dev  # Ativa esta configuraï¿½ï¿½o para o perfil 'dev'
   datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: postgres
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update  # Atualiza automaticamente para desenvolvimento
     show-sql: true
 
 ---
-# Configuração para o perfil 'test'
+# Configuraï¿½ï¿½o para o perfil 'test'
 spring:
   config:
     activate:
-      on-profile: test  # Define que esta configuração é para o perfil 'test'
+      on-profile: test  # Define que esta configuraï¿½ï¿½o ï¿½ para o perfil 'test'
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:test_db  # Banco de dados em memória
+    url: jdbc:h2:mem:test_db  # Banco de dados em memï¿½ria
     username: sa
     password:
   jpa:
@@ -42,19 +51,19 @@ spring:
 
 
 ---
-# Configuração para o perfil 'prod'
+# Configuraï¿½ï¿½o para o perfil 'prod'
 spring:
   config:
     activate:
-      on-profile: prod  # Define que esta configuração é para o perfil 'prod'
+      on-profile: prod  # Define que esta configuraï¿½ï¿½o ï¿½ para o perfil 'prod'
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}  # Use variáveis de ambiente
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}  # Use variï¿½veis de ambiente
     username: ${DB_USER}
     password: ${DB_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: none  # Evitar mudanças automáticas no banco de dados
+      ddl-auto: none  # Evitar mudanï¿½as automï¿½ticas no banco de dados
 
 
 ---

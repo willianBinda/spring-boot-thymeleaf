@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Login</title>
-    <th:block th:replace="~{fragments/navbar :: navbar}"></th:block>
+    <th:block th:replace="~{fragments/navbar :: navbar(logged=${logged})}"></th:block>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
     <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 </head>
@@ -26,6 +26,11 @@
             <ul>
                 <li th:each="error : ${validationErrors}" th:text="${error.defaultMessage}"></li>
             </ul>
+        </div>
+        <div th:if="${loginError}" class="alert alert-danger">
+            <div th:text="${loginError}">
+
+            </div>
         </div>
     </form>
 </div>
