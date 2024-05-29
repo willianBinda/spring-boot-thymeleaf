@@ -11,40 +11,24 @@
 <div class="container">
     <h1>Lista de arquivos salvos</h1>
 
-
-        <div class="dropdown">
+    <div class="d-flex justify-content-between mb-3">
+        <!-- Dropdown de Quantidade -->
+        <div class="dropdown ms-2">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                 Quantidade: <span th:text="${pageSize}"/>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li><a class="dropdown-item" th:href="@{'?page=' + ${currentPage} + '&pageSize=5'}">5</a></li>
-                <li><a class="dropdown-item" th:href="@{'?page=' + ${currentPage} + '&pageSize=10'}">10</a></li>
-                <li><a class="dropdown-item" th:href="@{'?page=' + ${currentPage} + '&pageSize=20'}">20</a></li>
+                <li><a class="dropdown-item" th:href="@{'?page=' + ${currentPage} + '&pageSize=5' + '&query=' + ${query}} ">5</a></li>
+                <li><a class="dropdown-item" th:href="@{'?page=' + ${currentPage} + '&pageSize=10' + '&query=' + ${query}}">10</a></li>
+                <li><a class="dropdown-item" th:href="@{'?page=' + ${currentPage} + '&pageSize=20' + '&query=' + ${query}}">20</a></li>
             </ul>
         </div>
-<!--        <div class="dropdown d-flex" data-bs-toggle="collapse">-->
-
-<!--            <button-->
-<!--                    class="btn btn-secondary dropdown-toggle"-->
-<!--                    type="button"-->
-<!--                    id="dropdownMenuButton1"-->
-<!--                    data-bs-toggle="dropdown"-->
-<!--                    aria-expanded="false"-->
-<!--            >-->
-<!--                Quantidade: <span th:text="${pageSize}"/>-->
-<!--            </button>-->
-<!--            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">-->
-<!--                <li><a class="dropdown-item" href="#">5</a></li>-->
-<!--                <li><a class="dropdown-item" th:href="@{'?page=' + ${currentPage} + '&pageSize=10'}">10</a></li>-->
-<!--                <li><a class="dropdown-item" th:href="@{'?page=' + ${currentPage} + '&pageSize=20'}">20</a></li>-->
-<!--            </ul>-->
-<!--            <form class="d-flex" data-bs-toggle="collapse" th:action="@{'/arquivos'}" method="get">-->
-<!--                <input class="form-control me-2" type="search" placeholder="Título" aria-label="Search" id="query" name="query">-->
-<!--                <button class="btn btn-outline-success" type="submit">Search</button>-->
-<!--            </form>-->
-<!--        </div>-->
-
-
+        <!-- Formulário de Pesquisa -->
+        <form th:action="@{/arquivos}" method="get" class="d-flex">
+            <input class="form-control me-2" type="search" placeholder="Pesquisar por filename" aria-label="Search" name="query" th:value="${query}">
+            <button class="btn btn-outline-success" type="submit">Pesquisar</button>
+        </form>
+    </div>
 
     <table class="table">
         <thead>
@@ -87,10 +71,10 @@
     <nav aria-label="Page navigation example">
         <ul class="pagination">
             <li class="page-item" th:classappend="${!hasPrevious}?'disabled'">
-                <a class="page-link" th:href="@{'?page=1' + '&pageSize=' + ${pageSize}}">First</a>
+                <a class="page-link" th:href="@{'?page=1' + '&pageSize=' + ${pageSize} + '&query=' + ${query}}">First</a>
             </li>
             <li class="page-item" th:classappend="${!hasPrevious}?'disabled'">
-                <a class="page-link" th:href="@{'?page=' + ${currentPage-1} + '&pageSize=' + ${pageSize}}">Previous</a>
+                <a class="page-link" th:href="@{'?page=' + ${currentPage-1} + '&pageSize=' + ${pageSize} + '&query=' + ${query}}">Previous</a>
             </li>
 
 
@@ -100,10 +84,10 @@
 
 
             <li class="page-item" th:classappend="${!hasNext}?'disabled'">
-                <a class="page-link" th:href="@{'?page=' + ${currentPage + 1} + '&pageSize=' + ${pageSize}}">Next</a>
+                <a class="page-link" th:href="@{'?page=' + ${currentPage + 1} + '&pageSize=' + ${pageSize} + '&query=' + ${query}}">Next</a>
             </li>
             <li class="page-item" th:classappend="${!hasNext}?  'disabled'">
-                <a class="page-link" th:href="@{'?page=' + ${totalPage} + '&pageSize=' + ${pageSize}}">Last</a>
+                <a class="page-link" th:href="@{'?page=' + ${totalPage} + '&pageSize=' + ${pageSize} + '&query=' + ${query}}">Last</a>
             </li>
         </ul>
     </nav>

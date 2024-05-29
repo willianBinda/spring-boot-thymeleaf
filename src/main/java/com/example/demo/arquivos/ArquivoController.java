@@ -51,6 +51,7 @@ public class ArquivoController {
         model.addAttribute("hasNext",arquivos.hasNext());
         model.addAttribute("hasPrevious",arquivos.hasPrevious());
         model.addAttribute("pageSize",arquivos.getSize());
+        model.addAttribute("query",query);
 
         model.addAttribute("df", DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
         return "/arquivos/index";
