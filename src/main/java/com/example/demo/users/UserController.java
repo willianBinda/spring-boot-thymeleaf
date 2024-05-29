@@ -3,12 +3,16 @@ package com.example.demo.users;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -24,19 +28,14 @@ public class UserController {
     }
 
     @PostMapping("users/new")
-    public String cadastrar(@ModelAttribute @Valid UserDTO dto, BindingResult bindingResult, Model model){
+    public ResponseEntity<?> cadastrar(@RequestBody @Valid UserDTO dto, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
-            // Se houver erros, adicione-os ao modelo
-            model.addAttribute("validationErrors", bindingResult.getAllErrors());
-            //model.addAttribute("logged", true);
-
-            // Retorne para a página do formulário para que o usuário possa corrigir os problemas
-            return "users/new";
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
-        UserDTO userDTO = userService.criaUser(dto);
-        model.addAttribute("userSaved",userDTO);
-        //model.addAttribute("logged", true);
 
-        return "users/new";
+        UserDTO userDTO = userService.criaUser(dto);
+
+
+        return ResponseEntity.ok().body(Map.of("user",userDTO));
     }
 }

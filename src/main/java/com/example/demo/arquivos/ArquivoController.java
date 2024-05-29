@@ -8,6 +8,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Controller
@@ -99,22 +101,44 @@ public class ArquivoController {
                 .headers(headers)
                 .body(resource);
     }
-
     @PostMapping("/arquivos/new")
-    public String salvaImagem(@ModelAttribute @Valid ArquivoDTO dto, BindingResult bindingResult, Model model){
-        //public String salvaImagem(@ModelAttribute @Valid ArquivoDTO dto, BindingResult bindingResult, Model model){
-        if (bindingResult.hasErrors()) {
-            // Se houver erros, adicione-os ao modelo
-            model.addAttribute("validationErrors", bindingResult.getAllErrors());
-            model.addAttribute("logged", true);
-            return "arquivos/new";
-        }
-        Boolean isSaved = arquivoService.salvaArquivo(dto);
-        model.addAttribute("saved", true);
-        model.addAttribute("logged", true);
+    public ResponseEntity<?> cadastrarArquivo(@ModelAttribute @Valid ArquivoDTO dto, BindingResult bindingResult) {
 
-        return "arquivos/new";
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+
+        }
+        // Lógica para salvar os arquivos e o título no banco de dados ou fazer outras operações necessárias
+        // Exemplo:
+//        for (MultipartFile file : files) {
+//            System.out.println(file.getOriginalFilename());
+//            // Processar e salvar o arquivo
+//            // file.getInputStream() fornece acesso ao conteúdo do arquivo
+//            // titulo contém o título do arquivo
+//        }
+        Boolean isSaved = arquivoService.salvaArquivo(dto);
+        if(isSaved){
+            return ResponseEntity.ok().body(Map.of("redirectUrl","/arquivos"));
+
+        }else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Erro ao salvar o arquivo.");
+        }
     }
+//    @PostMapping("/arquivos/new")
+//    public String salvaImagem(@ModelAttribute @Valid ArquivoDTO dto, BindingResult bindingResult, Model model){
+//        //public String salvaImagem(@ModelAttribute @Valid ArquivoDTO dto, BindingResult bindingResult, Model model){
+//        if (bindingResult.hasErrors()) {
+//            // Se houver erros, adicione-os ao modelo
+//            model.addAttribute("validationErrors", bindingResult.getAllErrors());
+//            model.addAttribute("logged", true);
+//            return "arquivos/new";
+//        }
+//        Boolean isSaved = arquivoService.salvaArquivo(dto);
+//        model.addAttribute("saved", true);
+//        model.addAttribute("logged", true);
+//
+//        return "arquivos/new";
+//    }
 
     @PostMapping("/arquivos")
     public String removerArquivo(@RequestParam("id") String id){

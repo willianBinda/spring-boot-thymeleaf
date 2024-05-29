@@ -5,34 +5,72 @@
     <th:block th:replace="~{fragments/navbar :: navbar(logged=${logged})}"></th:block>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
     <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 </head>
 <body>
 
 <div class="container">
     <h1>Login</h1>
-    <form th:action="@{/login}" method="post">
+    <form id="loginForm">
         <div class="form-group">
             <label for="email">Email:</label>
             <input type="text" class="form-control" id="email" name="email">
         </div>
+
         <div class="form-group">
             <label for="senha">Password:</label>
             <input type="password" class="form-control" id="senha" name="senha">
         </div>
+
         <div class="form-group">
             <button type="submit" class="btn btn-primary">Login</button>
         </div>
-        <div th:if="${validationErrors}" class="alert alert-danger">
-            <ul>
-                <li th:each="error : ${validationErrors}" th:text="${error.defaultMessage}"></li>
-            </ul>
-        </div>
-        <div th:if="${loginError}" class="alert alert-danger">
-            <div th:text="${loginError}">
 
-            </div>
+        <div id="validationErrors" class="alert alert-danger" style="display: none;">
+            <ul id="errorsList"></ul>
         </div>
+
+        <div id="loginError" class="alert alert-danger" style="display: none;"></div>
     </form>
+
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('#loginForm').on('submit', function(event) {
+            event.preventDefault(); // Previne o envio padrão do formulário
+
+            const email = $('#email').val();
+            const senha = $('#senha').val();
+
+            $.ajax({
+                url: '/login',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ email: email, senha: senha }),
+                success: function(response) {
+                    // Redireciona ou realiza alguma ação de sucesso
+                    window.location.href = response.redirectUrl || '/';
+                },
+                error: function(xhr) {
+
+                    const errors = xhr.responseJSON;
+                    if (errors) {
+                        $('#errorsList').empty();
+                        errors.forEach(function(error) {
+                            $('#errorsList').append('<li>' + error.defaultMessage + '</li>');
+                        });
+                        $('#validationErrors').show();
+                    } else {
+
+                        $('#loginError').text('Login failed. Please try again.').show();
+                    }
+                }
+            });
+        });
+    });
+</script>
+
 </body>
 </html>

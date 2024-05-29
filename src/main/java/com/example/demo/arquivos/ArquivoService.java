@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,27 +22,41 @@ public class ArquivoService {
     private final ModelMapper modelMapper;
 
     public Boolean salvaArquivo(ArquivoDTO arquivoDTO){
-        List<ArquivoDTO2> arquivosMulti = arquivoDTO.getFiles().stream()
-                .map(file -> {
-                    ArquivoDTO2 arquivos = new ArquivoDTO2();
-                    arquivos.setTitulo(arquivoDTO.getTitulo());
-                    arquivos.setFilename(file.getOriginalFilename());
-                    try {
-                        arquivos.setData(file.getBytes());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    return arquivos;
-                })
-                .toList();
-        List<Arquivo> arquivosEntity = arquivosMulti.stream()
-                .map(ar -> modelMapper.map(ar,Arquivo.class))
-                .toList();
-        arquivoRepository.saveAll(arquivosEntity);
-//        Arquivo arquivo = modelMapper.map(arquivoDTO2,Arquivo.class);
-//        arquivoRepository.save(arquivo);
-//        return modelMapper.map(arquivo,ArquivoDTO2.class);
+        for (MultipartFile file : arquivoDTO.getFiles()) {
+            ArquivoDTO2 arquivos = new ArquivoDTO2();
+            arquivos.setTitulo(arquivoDTO.getTitulo());
+            arquivos.setFilename(file.getOriginalFilename());
+            try {
+                arquivos.setData(file.getBytes());
+            } catch (IOException e) {
+                return false;
+//                throw new RuntimeException(e);
+            }
+            Arquivo arquivo = modelMapper.map(arquivos,Arquivo.class);
+            arquivoRepository.save(arquivo);
+
+        }
         return true;
+
+//        List<ArquivoDTO2> arquivosMulti = arquivoDTO.getFiles().stream()
+//                .map(file -> {
+//                    ArquivoDTO2 arquivos = new ArquivoDTO2();
+//                    arquivos.setTitulo(arquivoDTO.getTitulo());
+//                    arquivos.setFilename(file.getOriginalFilename());
+//                    try {
+//                        arquivos.setData(file.getBytes());
+//                    } catch (IOException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                    return arquivos;
+//                })
+//                .toList();
+//        List<Arquivo> arquivosEntity = arquivosMulti.stream()
+//                .map(ar -> modelMapper.map(ar,Arquivo.class))
+//                .toList();
+//        arquivoRepository.saveAll(arquivosEntity);
+//
+//        return true;
     }
 
     public Page<ArquivoDTO2> listaArquivos(Integer page, Integer pageSize, String query){

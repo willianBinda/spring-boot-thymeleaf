@@ -17,7 +17,7 @@ public class ArquivoDTO {
     private String id;
     @NotBlank(message = "Adicione um título!")
     private String titulo;
-    private List<MultipartFile> files;
+    private MultipartFile[] files;
     private String filename;
     private LocalDateTime updatedAt;
     private LocalDateTime createdAt;
