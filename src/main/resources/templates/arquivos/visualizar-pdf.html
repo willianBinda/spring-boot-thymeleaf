@@ -15,7 +15,6 @@
         <canvas id="pdf-canvas"></canvas>
     </div>
     <div class="pdf-viewer">
-<!--        <iframe th:src="@{/visualizarPDF?id=740be2f3-d102-400f-942c-ff52b07f3548}" width="100%" height="600px"></iframe>-->
     </div>
 </div>
 </body>
@@ -28,7 +27,6 @@
     // Carregar o PDF usando PDF.js
     var loadingTask = pdfjsLib.getDocument(url);
     loadingTask.promise.then(function(pdf) {
-        // Você pode fazer algo com o PDF aqui, como mostrar a quantidade de páginas
         pdf.getPage(1).then(function(page) {
             var scale = 1.5;
             var viewport = page.getViewport({ scale: scale });

@@ -2,6 +2,10 @@ package com.example.demo.arquivos;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -40,15 +44,22 @@ public class ArquivoService {
         return true;
     }
 
-    public List<ArquivoDTO2> listaArquivos(){
-        return arquivoRepository.findAll()
-                .stream()
-                .map(a -> modelMapper.map(a,ArquivoDTO2.class))
-                .toList();
+    public Page<ArquivoDTO2> listaArquivos(Integer page, Integer pageSize, String query){
+
+        int def_page = page < 1 ? 0 : page - 1;
+
+        Pageable adj_page = PageRequest.of(def_page, pageSize, Sort.Direction.DESC,"createdAt");
+
+        return arquivoRepository.searchArquivo(query, adj_page)
+                .map(a -> modelMapper.map(a,ArquivoDTO2.class));
     }
 
     public ArquivoDTO2 getPdfData(String id) {
         Optional<Arquivo> arquivo = arquivoRepository.findById(id);
         return arquivo.map(value -> modelMapper.map(value, ArquivoDTO2.class)).orElse(null);
+    }
+
+    public void removerArquivo(String id) {
+        arquivoRepository.deleteById(id);
     }
 }

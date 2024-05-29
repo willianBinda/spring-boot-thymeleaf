@@ -10,9 +10,46 @@
 <body>
 <div class="container">
     <h1>Lista de arquivos salvos</h1>
+
+
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                Quantidade: <span th:text="${pageSize}"/>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li><a class="dropdown-item" th:href="@{'?page=' + ${currentPage} + '&pageSize=5'}">5</a></li>
+                <li><a class="dropdown-item" th:href="@{'?page=' + ${currentPage} + '&pageSize=10'}">10</a></li>
+                <li><a class="dropdown-item" th:href="@{'?page=' + ${currentPage} + '&pageSize=20'}">20</a></li>
+            </ul>
+        </div>
+<!--        <div class="dropdown d-flex" data-bs-toggle="collapse">-->
+
+<!--            <button-->
+<!--                    class="btn btn-secondary dropdown-toggle"-->
+<!--                    type="button"-->
+<!--                    id="dropdownMenuButton1"-->
+<!--                    data-bs-toggle="dropdown"-->
+<!--                    aria-expanded="false"-->
+<!--            >-->
+<!--                Quantidade: <span th:text="${pageSize}"/>-->
+<!--            </button>-->
+<!--            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">-->
+<!--                <li><a class="dropdown-item" href="#">5</a></li>-->
+<!--                <li><a class="dropdown-item" th:href="@{'?page=' + ${currentPage} + '&pageSize=10'}">10</a></li>-->
+<!--                <li><a class="dropdown-item" th:href="@{'?page=' + ${currentPage} + '&pageSize=20'}">20</a></li>-->
+<!--            </ul>-->
+<!--            <form class="d-flex" data-bs-toggle="collapse" th:action="@{'/arquivos'}" method="get">-->
+<!--                <input class="form-control me-2" type="search" placeholder="Título" aria-label="Search" id="query" name="query">-->
+<!--                <button class="btn btn-outline-success" type="submit">Search</button>-->
+<!--            </form>-->
+<!--        </div>-->
+
+
+
     <table class="table">
         <thead>
         <tr>
+            <th scope="col">Number</th>
             <th scope="col">id</th>
             <th scope="col">titulo</th>
             <th scope="col">filename</th>
@@ -22,28 +59,61 @@
         </tr>
         </thead>
         <tbody>
-        <tr  th:each="arquivo : ${listaArquivos}">
+        <tr  th:each="arquivo,iterStat : ${content}">
+            <td th:text="${iterStat.count}">Otto2</td>
             <td th:text="${arquivo.id}">Otto</td>
             <th scope="row" th:text="${arquivo.titulo}">1</th>
             <td th:text="${arquivo.filename}">Mark</td>
             <td th:text="${df.format(arquivo.updatedAt)}">Mark</td>
             <td th:text="${df.format(arquivo.createdAt)}">Mark</td>
             <td class="btn-group" role="group" >
+
                 <a th:href="@{/visualizar-pdf(id=${arquivo.id})}" class="btn btn-danger">Visualizar</a>
-<!--                <form th:action="@{/visualizar-pdf?id=${arquivo.id}}" method="get">-->
-<!--                    <input type="hidden" name="id" th:value="${arquivo.id}" />-->
-<!--                    <button type="submit" class="btn btn-danger">Visualizar</button>-->
-<!--                </form>-->
+
                 <form th:action="@{/download-pdf}" method="get">
                     <input type="hidden" name="id" th:value="${arquivo.id}" />
                     <button type="submit" class="btn btn-warning">Download</button>
+                </form>
+
+                <form th:action="@{/arquivos}" method="post">
+                    <input type="hidden" name="id" th:value="${arquivo.id}" />
+                    <button type="submit" class="btn btn-danger">Remover</button>
                 </form>
 
             </td>
         </tr>
         </tbody>
     </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${!hasPrevious}?'disabled'">
+                <a class="page-link" th:href="@{'?page=1' + '&pageSize=' + ${pageSize}}">First</a>
+            </li>
+            <li class="page-item" th:classappend="${!hasPrevious}?'disabled'">
+                <a class="page-link" th:href="@{'?page=' + ${currentPage-1} + '&pageSize=' + ${pageSize}}">Previous</a>
+            </li>
 
+
+            <li class="page-item active">
+                <a class="page-link" href="#" th:text="${currentPage}">CurrentPage</a>
+            </li>
+
+
+            <li class="page-item" th:classappend="${!hasNext}?'disabled'">
+                <a class="page-link" th:href="@{'?page=' + ${currentPage + 1} + '&pageSize=' + ${pageSize}}">Next</a>
+            </li>
+            <li class="page-item" th:classappend="${!hasNext}?  'disabled'">
+                <a class="page-link" th:href="@{'?page=' + ${totalPage} + '&pageSize=' + ${pageSize}}">Last</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="alert alert-success" role="alert" th:if="${arquivoDeleted}">
+        <h1>
+            Arquivos removido com sucesso!!!
+        </h1>
+    </div>
 </div>
+
 </body>
 </html>

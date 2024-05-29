@@ -6,16 +6,14 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -31,11 +29,29 @@ public class ArquivoController {
     private final ModelMapper modelMapper;
 
     @GetMapping("/arquivos")
-    public String arquivos(Model model){
+    public String arquivos(
+            Model model,
+            @RequestParam(name = "page",defaultValue = "1") Integer page,
+            @RequestParam(name = "pageSize",defaultValue = "5") Integer pageSize,
+            @RequestParam(name = "query",defaultValue = "") String query
+            ){
+        System.out.println(page);
+        System.out.println(pageSize);
+        System.out.println(query);
         model.addAttribute("logged", true);
 
-        List<ArquivoDTO2> arquivos = arquivoService.listaArquivos();
-        model.addAttribute("listaArquivos",arquivos);
+        Page<ArquivoDTO2> arquivos = arquivoService.listaArquivos(page,pageSize,query);
+
+        model.addAttribute("content",arquivos.getContent());
+        model.addAttribute("totalElements",arquivos.getTotalElements());
+        model.addAttribute("totalPage",arquivos.getTotalPages());
+        model.addAttribute("currentPage",(arquivos.getNumber() + 1));
+        model.addAttribute("isFirst",arquivos.isFirst());
+        model.addAttribute("isLast",arquivos.isLast());
+        model.addAttribute("hasNext",arquivos.hasNext());
+        model.addAttribute("hasPrevious",arquivos.hasPrevious());
+        model.addAttribute("pageSize",arquivos.getSize());
+
         model.addAttribute("df", DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
         return "/arquivos/index";
     }
@@ -97,5 +113,13 @@ public class ArquivoController {
         model.addAttribute("logged", true);
 
         return "arquivos/new";
+    }
+
+    @PostMapping("/arquivos")
+    public String removerArquivo(@RequestParam("id") String id){
+        System.out.println(id);
+        arquivoService.removerArquivo(id);
+
+        return "redirect:/arquivos";
     }
 }
